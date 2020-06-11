@@ -10,7 +10,7 @@ To create an offline marketplace in OCP 4:
 ./get-operator.sh redhat-operators jaeger-product
 ./get-operator.sh redhat-operators servicemeshoperator
 ```
-Check sources on how to get a list of all the operators (4.2 docs version).
+Check the _Sources_ section on how to get a list of all the operators (the 4.2 documentation version).
 
 2. Create a manifest directory:
 
