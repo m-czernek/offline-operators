@@ -98,6 +98,7 @@ grpcurl -plaintext localhost:50051 api.Registry/ListPackages
 - https://github.com/ppetko/disconnected-install-service-mesh
 - https://docs.openshift.com/container-platform/4.2/operators/olm-restricted-networks.html
 - https://docs.openshift.com/container-platform/4.4/operators/olm-restricted-networks.html
+- https://docs.openshift.com/container-platform/4.6/operators/admin/olm-managing-custom-catalogs.html#olm-testing-operator-catalog-image_olm-managing-custom-catalogs
 
 ## Notes
 
