@@ -1,6 +1,9 @@
 # Creating Offline Operator Marketplace
 
-To create an offline marketplace in OCP 4:
+To create an offline marketplace in OCP 4, if you have access to an OpenShift cluster,
+the easiest way to create a manifest image is to follow the [official documentation](https://docs.openshift.com/container-platform/4.6/operators/admin/olm-managing-custom-catalogs.html#olm-building-operator-catalog-image_olm-managing-custom-catalogs) using `oc adm`.
+
+To manually build the manifest image:  
 
 1. Download all operators you require, for example:
 
@@ -29,14 +32,16 @@ podman build --no-cache -f Dockerfile \
 podman push ${REGISTRY}/mirrored-operator-catalog
 ```
 
-4. Disable external sources for your OCP:
+Once you have a manifest image:
+
+1. Disable external sources for your OCP:
 
 ```sh
 oc patch OperatorHub cluster --type json \
     -p '[{"op": "add", "path": "/spec/disableAllDefaultSources", "value": true}]'
 ```
 
-5. Deploy catalog source using your image:
+2. Deploy catalog source using your image:
 
 ```yaml
 apiVersion: operators.coreos.com/v1alpha1
@@ -51,10 +56,41 @@ spec:
   publisher: grpc
 ```
 
-6. Verify that operators are available:
+3. Verify that operators are available:
 
 ```sh
 oc get packagemanifest -n openshift-marketplace
+```
+
+## Verifying the content of a manifest image
+
+To verify what a manifest image includes:
+
+1. Download the latest [grpcurl](https://github.com/fullstorydev/grpcurl/releases/latest).
+
+2. Execute the container locally:
+
+```sh
+podman run -p 50051:50051 -it $IMAGE_URL
+```
+
+3. Query the contents with `grpcurl`:
+
+```sh
+grpcurl -plaintext localhost:50051 api.Registry/ListPackages
+
+{
+  "name": "elasticsearch-operator"
+}
+{
+  "name": "jaeger-product"
+}
+{
+  "name": "kiali-ossm"
+}
+{
+  "name": "servicemeshoperator"
+}
 ```
 
 ## Sources
@@ -67,4 +103,3 @@ oc get packagemanifest -n openshift-marketplace
 
 - The `Dockerfile` uses version `v4.4.0`; keep this version in sync with your OpenShift version
 - The `get-operator.sh` script requires `jq`, `curl`, and an environment able to download from quay.io
-
